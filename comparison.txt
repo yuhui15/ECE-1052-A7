@@ -1,0 +1,36 @@
+Comparison of linear_svc, nu_svc and linear_bayesian (USDCAD H3, train rows 0-9999, test rows 10000-11999)
+
+                    CV f1_macro  In-sample Sharpe  Out-of-sample Sharpe  OOS accuracy  phi_k p-val  WRC avg ret  WRC p-value
+linear_svc (C=0.0072, tp=5)   42.17        2.90              3.12             0.4045      6.2e-06     0.000139     0.0012
+nu_svc (rbf, nu=0.7, tp=5)    41.33       17.39              1.89             0.3845      0.077       0.000083     0.0362
+linear_bayesian (MixedNB)     39.98        2.74              1.72             0.399       0.00016     0.000074     0.0496
+
+All three reject H0 at 5%, but the White Reality Check p-value is far smaller for the linear SVC
+(0.0012) than for the NuSVC (0.036) and the naive Bayes model (0.0496, borderline).
+
+What causes the difference:
+The bootstrap distribution of the mean (centered, detrended) return has almost the same width for the three
+models (2.5-97.5% band about +/-9e-5), because they trade the same 2000 bars with the same volatility. So the
+p-value is driven almost entirely by the average detrended return of each rule: 0.000139 vs 0.000083 vs 0.000074.
+The difference in average return comes from how well each model generalizes (bias-variance trade-off):
+
+1. Linear SVC: a strongly regularized linear boundary (small C). FX returns are very noisy with a weak signal,
+   and a simple high-bias/low-variance model captures the weak, stable linear relationships (hour of day,
+   short-term mean reversion in ret1, volatility) without fitting the noise. In-sample and out-of-sample
+   Sharpe are similar (2.90 vs 3.12), a sign that it is not overfitting.
+
+2. NuSVC (rbf kernel): a very flexible non-linear model. With nu=0.7 at least 70% of the training points are
+   support vectors, and the rbf boundary memorizes the noise of the training set: in-sample Sharpe 17.4 and
+   CAGR 222% collapse to 1.89 out of sample. Its CV score is not better than the linear model, its test
+   predictions are not significantly related to the labels (phi_k p=0.077), so its out-of-sample return,
+   and therefore its WRC p-value, is worse. The extra flexibility buys variance, not signal.
+
+3. Naive Bayes (MixedNB): too restrictive in the wrong way. It assumes features are independent within each
+   class and Gaussian; the returns ret1..ret14, RSI, DSMA, OO are strongly correlated and fat-tailed, so evidence
+   is double-counted (PCA reduces but does not remove this, since decorrelation is not class-conditional
+   independence). Its probability estimates are poorly calibrated, giving the weakest edge and a borderline p.
+
+Caveats: one test window of 2000 bars only; no transaction costs; and the White Reality Check here is applied
+to one rule at a time, so trying three models (plus hyperparameter searches) and keeping the best is itself
+data snooping: a proper WRC across all three rules would raise the p-values (a Bonferroni-style 0.05/3 = 0.0167
+would only be passed by the linear SVC).
