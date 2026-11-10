@@ -1,0 +1,71 @@
+<OPEN>     float64
+<HIGH>     float64
+<LOW>      float64
+<CLOSE>    float64
+ret1       float64
+ret2       float64
+ret3       float64
+ret4       float64
+ret5       float64
+ret6       float64
+ret7       float64
+ret8       float64
+ret9       float64
+ret10      float64
+ret11      float64
+ret12      float64
+ret13      float64
+ret14      float64
+hour         int32
+day          int32
+RSI        float64
+SMA        float64
+Corr       float64
+SAR        float64
+ADX        float64
+OO         float64
+OC         float64
+RANGE      float64
+DSMA       float64
+DSAR       float64
+VOL        float64
+dtype: object
+Best parameters : {'t__rsiadx__kw_args': {'timeperiod': 5}, 'svc__nu': np.float64(0.7000000000000001)}
+Best cross-validation score : 41.33
+In-sample: CAGR=2.21595 Sharpe ratio=17.386 maxDD=-0.0129602 maxDDD=70 Calmar ratio=170.981
+
+Out-of-sample: CAGR=0.184025 Sharpe ratio=1.88579 maxDD=-0.0685027 maxDDD=376 Calmar ratio=2.68639  phi_k_corr=0.110817 phi_k_p_val=0.0768567  accuracy_score=0.3845
+
+Ljung-Box test p-value 0.01558671883748387
+average return 0.000083
+[-8.84665757e-05  9.15281817e-05]
+Reject Ho = The population distribution of rule returns has an expected value of zero or less (because p_value is small enough)
+p_value:
+0.03620000000000001
+SHAP feature importance (mean |SHAP value|, up class):
+hour     0.297578
+ret1     0.176495
+VOL      0.154059
+RANGE    0.142847
+DSAR     0.127873
+ret5     0.126566
+ret8     0.124617
+ret3     0.123652
+DSMA     0.122289
+ret2     0.121597
+ret6     0.117376
+day      0.112493
+ret4     0.110615
+ret13    0.108271
+ret7     0.107108
+Corr     0.105718
+ADX      0.089925
+ret12    0.089862
+ret14    0.089014
+OO       0.087971
+ret10    0.086885
+RSI      0.085817
+ret9     0.084108
+ret11    0.079010
+OC       0.071993
+dtype: float64
